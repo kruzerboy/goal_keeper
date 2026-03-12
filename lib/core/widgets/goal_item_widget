@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+
+
+class GoalItemWidget extends StatelessWidget {
+  final Goal goal;
+  final bool isPending;
+  final VoidCallback? onToggle;
+
+  const GoalItemWidget({
+    super.key,
+    required this.goal,
+    this.isPending = false,
+    this.onToggle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: onToggle,
+            child: isPending
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: AppColors.primary),
+                  )
+                : _Circle(isCompleted: goal.isCompleted),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  goal.title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: goal.isCompleted
+                        ? AppColors.textSecondary
+                        : AppColors.textPrimary,
+                    decoration: goal.isCompleted
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${goal.category.label}  •  ${goal.priority.label}'
+                  '${goal.scheduledTime != null ? '  •  ${goal.scheduledTime}' : ''}',
+                  style: const TextStyle(
+                      fontSize: 12, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.more_vert, color: AppColors.textSecondary, size: 20),
+        ],
+      ),
+    );
+  }
+}
+
+class _Circle extends StatelessWidget {
+  final bool isCompleted;
+  const _Circle({required this.isCompleted});
+
+  @override
+  Widget build(BuildContext context) => AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isCompleted ? AppColors.primary : Colors.transparent,
+          border: Border.all(
+            color: isCompleted ? AppColors.primary : AppColors.border,
+            width: 2,
+          ),
+        ),
+        child: isCompleted
+            ? const Icon(Icons.check, size: 14, color: Colors.white)
+            : null,
+      );
+}

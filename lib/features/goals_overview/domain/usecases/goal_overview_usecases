@@ -1,0 +1,16 @@
+import '../../../../core/error/result.dart';
+import '../../../../core/utils/use_case.dart';
+import '../entities/goal_item.dart';
+import '../repositories/goals_overview_repository.dart';
+
+final class GetGoalsByTimeframeUseCase
+    implements UseCase<List<GoalItem>, GoalTimeframe> {
+  final GoalsOverviewRepository _repo;
+  const GetGoalsByTimeframeUseCase(this._repo);
+
+  @override
+  AsyncResult<List<GoalItem>> call(GoalTimeframe params) =>
+      _repo.getGoalsByTimeframe(params);
+}
+
+
