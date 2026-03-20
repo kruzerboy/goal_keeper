@@ -63,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       bottomNavigationBar: _BottomNav(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRoutes.addGoal),
+        onPressed: () => context.push(AppRoutes.addGoal),
         backgroundColor: AppColors.primary,
         shape: const CircleBorder(),
         child: const Icon(Icons.add, color: Colors.white),

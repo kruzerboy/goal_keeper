@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goal_keeper_app/core/di/service_locator.dart';
+import 'package:goal_keeper_app/core/router/app_router.dart';
 import 'package:goal_keeper_app/core/theme/app_theme.dart';
 import 'package:goal_keeper_app/core/utils/screen_state.dart';
 import 'package:goal_keeper_app/features/goals/domain/entities/goal_item.dart';
@@ -23,7 +25,19 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       ..addListener(_rebuild);
   }
 
-  void _rebuild() => setState(() {});
+  void _rebuild() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _closeScreen() {
+    if (!mounted) return;
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+    context.go(AppRoutes.dashboard);
+  }
 
   @override
   void dispose() {
@@ -42,7 +56,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _TopBar(),
+            _TopBar(onClose: _closeScreen),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
@@ -90,7 +104,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
               isLoading: isLoading,
               enabled: _controller.form.isValid && !isLoading,
               onSave: () => _controller.saveGoal(
-                onSuccess: () => Navigator.of(context).pop(),
+                onSuccess: _closeScreen,
               ),
             ),
           ],
@@ -103,13 +117,17 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
 // ─── Sub-widgets ─────────────────────────────────────────────────────────────
 
 class _TopBar extends StatelessWidget {
+  final VoidCallback onClose;
+
+  const _TopBar({required this.onClose});
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           children: [
             GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
+              onTap: onClose,
               child: const Icon(Icons.close, color: AppColors.textPrimary),
             ),
             const Expanded(
